@@ -122,7 +122,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({ initialCar, carI
     .map((src) => (typeof src === "string" ? src.trim() : ""))
     .filter(Boolean);
 
-  const images: string[] = rawImages.filter((img, idx) => rawImages.indexOf(img) === idx);
+  const images: string[] = rawImages.filter((img, idx) => rawImages.indexOf(img) === idx).slice(1);
   const hasMultipleImages = images.length > 1;
   const activeIndex = currentIndex >= images.length ? 0 : currentIndex;
 
