@@ -39,11 +39,10 @@ export const CarCard: React.FC<CarCardProps> = ({
   const modelName = model || car.name || "Model";
   const resolvedMileage = mileage !== undefined && mileage !== null ? mileage : city_mpg || 0;
 
-  // Use uploaded images or API images or fallback generator
+  const availableImages = Array.isArray(car.images) ? car.images.filter(Boolean) : [];
   const imageUrl =
-    (Array.isArray(car.images) && car.images[0]) ||
-    img_url ||
-    generateCarImageUrl(car);
+    (availableImages.length > 1 && availableImages[1]) ||
+    generateCarImageUrl(car, "29");
 
   const displayStatus = car.status ? t.carCard.statuses[car.status] || car.status : null;
 
