@@ -5,6 +5,7 @@ import { CarProps, ManagedCar } from "@/types";
 
 const inventoryPath = process.env.CAR_DATA_FILE || path.join(process.cwd(), "data", "cars.json");
 const sourceUrl = "https://private-anon-1f2c0378ab-carsapi1.apiary-mock.com/cars";
+const isVercelRuntime = process.env.VERCEL === "1";
 
 function normalizeCar(car: CarProps, index: number): ManagedCar {
   const images = car.images?.length ? car.images : car.img_url ? [car.img_url] : [];
@@ -46,10 +47,16 @@ export async function getAllCars(): Promise<ManagedCar[]> {
 
   const sourceCars = (await response.json()) as CarProps[];
   const cars = sourceCars.map(normalizeCar);
-  await writeInventory(cars);
+  if (!isVercelRuntime) {
+    await writeInventory(cars);
+  }
   return cars;
 }
 
 export async function saveAllCars(cars: ManagedCar[]): Promise<void> {
+  if (isVercelRuntime) {
+    throw new Error("File-based inventory storage is not supported on Vercel; configure a persistent database.");
+  }
+
   await writeInventory(cars);
 }
